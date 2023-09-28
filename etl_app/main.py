@@ -10,16 +10,14 @@ def main():
 
     # Extract data
     sqs_response = read_messages_from_sqs()
-    print('A new message was received')
 
     # Transform data to records
     messages = transform_messages(sqs_response)
 
     # Load to database
     load_messages(messages, POSTGRES_CONN)
-    print('New records inserted')
 
-    
+
 if __name__ == "__main__":
     while True:
         try:

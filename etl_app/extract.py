@@ -23,13 +23,8 @@ def read_messages_from_sqs(max_messages: int = 15) -> list:
         response = sqs.receive_message(
             QueueUrl=ENDPOINT_URL,
             MaxNumberOfMessages=max_messages,
-            AttributeNames=[
-                'ApproximateNumberOfMessages'
-            ]
         )
-        remaining_messages = int(response["Attributes"]['ApproximateNumberOfMessages'])
-        if remaining_messages == 0:
-            keep_looping = False
+
         # Check if the response contains messages
         if "Messages" in response:
             messages = response["Messages"]
@@ -43,4 +38,4 @@ def read_messages_from_sqs(max_messages: int = 15) -> list:
         # Print any errors that occur while reading messages from the queue
         print(f"Error reading messages from SQS: {e}")
 
-    return messages, keep_looping
+    return messages
