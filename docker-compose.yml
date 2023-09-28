@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+
+  localstack:
+    image: fetchdocker/data-takehome-localstack
+    ports:
+      - "4566:4566"
+    networks:
+      - isolated-network
+
+  postgres:
+    image: fetchdocker/data-takehome-postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - isolated-network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+
+  etl_app:
+    container_name: etl_app
+    image: etl_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - isolated-network
+    depends_on:
+      - localstack
+      - postgres
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+
+networks:
+  isolated-network:
+    driver: bridge
